@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LoveYou</title>
+<meta name="description" content="Ada kejutan kecil untukmu.">
+<meta property="og:title" content="LoveYou">
+<meta property="og:description" content="Ada kejutan kecil untukmu. Buka amplopnya.">
+<meta name="theme-color" content="#d1215f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Caveat:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&"IntersectionObserver"in window)document.documentElement.classList.add("js")</script>
+</head>
+<body>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="drift" id="drift" aria-hidden="true"></div>
+
+<div class="tools">
+  <button class="chip" id="themeBtn" type="button" aria-label="Ganti tema terang atau gelap">Tema</button>
+  <button class="chip" id="editBtn" type="button" aria-expanded="false" aria-controls="panel" hidden>Ubah</button>
+</div>
+
+<form class="panel" id="panel" hidden>
+  <div>
+    <label for="inPreset">Gaya</label>
+    <select id="inPreset"></select>
+    <small id="presetDesc"></small>
+  </div>
+  <div>
+    <label for="inName">Nama panggilan dia</label>
+    <input id="inName" type="text" maxlength="40" autocomplete="off">
+  </div>
+  <div>
+    <label for="inFrom">Namamu (muncul di bagian bawah)</label>
+    <input id="inFrom" type="text" maxlength="40" autocomplete="off">
+  </div>
+  <div>
+    <label for="inDate">Tanggal jadian</label>
+    <input id="inDate" type="date">
+  </div>
+  <div>
+    <label for="inLetter">Isi surat (tulis {nama} untuk menyebut namanya)</label>
+    <textarea id="inLetter" maxlength="2000"></textarea>
+  </div>
+  <div>
+    <label for="inReasons">Alasan sayang (satu alasan per baris)</label>
+    <textarea id="inReasons"></textarea>
+  </div>
+  <div>
+    <label for="inMemories">Kenangan (satu per baris: waktu | judul | cerita)</label>
+    <textarea id="inMemories"></textarea>
+  </div>
+  <div>
+    <label for="inCoupons">Kupon (satu per baris: nama kupon | penjelasan)</label>
+    <textarea id="inCoupons"></textarea>
+  </div>
+  <div>
+    <label for="inQuestion">Pertanyaan di akhir</label>
+    <input id="inQuestion" type="text" maxlength="80" autocomplete="off">
+  </div>
+  <div>
+    <label for="inFinal">Pesan setelah dia menekan Mau</label>
+    <input id="inFinal" type="text" maxlength="200" autocomplete="off">
+  </div>
+  <div class="row">
+    <button class="btn" type="submit">Lihat hasilnya</button>
+    <button class="btn ghost" type="button" id="linkBtn">Salin link</button>
+    <button class="btn ghost" type="button" id="resetBtn">Kembalikan awal</button>
+  </div>
+  <div id="linkBox" hidden>
+    <label for="linkOut">Link yang sudah berisi semua isian di atas</label>
+    <input id="linkOut" type="text" readonly>
+  </div>
+  <small id="linkNote">Foto diatur lewat file config.js, tidak ikut masuk link.</small>
+</form>
+
+<main class="wrap">
+  <section class="hero" aria-labelledby="title">
+    <div>
+      <h1 id="title">LoveYou</h1>
+      <p class="to"><span id="toPrefix">Kejutan kecil untuk</span> <b id="toName">Sayang</b></p>
+    </div>
+    <div class="stage">
+      <button class="env" id="env" type="button" aria-label="Buka amplop">
+        <span class="back"></span>
+        <span class="note"></span>
+        <span class="front"></span>
+        <span class="flap"></span>
+        <span class="seal">♥</span>
+      </button>
+      <p class="hint" id="hint">Ketuk amplopnya</p>
+      <article class="letter" id="letter" hidden>
+        <div class="text" id="letterText"></div>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-days">
+    <div class="sec-head">
+      <span class="label">Hitung hari</span>
+      <h2 id="h-days">Kita sudah sejauh ini</h2>
+    </div>
+    <div class="counter">
+      <div class="big"><span id="cDays">0</span><small id="cCaption">hari bersama</small></div>
+      <div class="units">
+        <div class="unit"><b id="cH">00</b><span>jam</span></div>
+        <div class="unit"><b id="cM">00</b><span>menit</span></div>
+        <div class="unit"><b id="cS">00</b><span>detik</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="photoSec" aria-labelledby="h-photo" hidden>
+    <div class="sec-head">
+      <span class="label">Foto</span>
+      <h2 id="h-photo">Potongan cerita kita</h2>
+    </div>
+    <div class="polaroids" id="polaroids"></div>
+  </section>
+
+  <section aria-labelledby="h-reason">
+    <div class="sec-head">
+      <span class="label">Alasan</span>
+      <h2 id="h-reason">Kenapa aku sayang kamu</h2>
+      <p id="reasonSub"></p>
+    </div>
+    <div class="reason">
+      <div class="reason-card" id="reasonCard">
+        <span class="n" id="reasonN"></span>
+        <p id="reasonP"></p>
+        <button class="btn" id="reasonBtn" type="button">Alasan berikutnya</button>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-mem">
+    <div class="sec-head">
+      <span class="label">Kenangan</span>
+      <h2 id="h-mem">Cerita kita sejauh ini</h2>
+    </div>
+    <ol class="timeline" id="timeline"></ol>
+  </section>
+
+  <section aria-labelledby="h-coupon">
+    <div class="sec-head">
+      <span class="label">Kupon cinta</span>
+      <h2 id="h-coupon">Janji yang bisa kamu pakai</h2>
+      <p>Ketuk satu kupon untuk memakainya. Ketuk lagi untuk mengembalikannya.</p>
+    </div>
+    <div class="coupons" id="coupons"></div>
+  </section>
+
+  <section aria-labelledby="h-ask">
+    <div class="ask" id="ask">
+      <span class="label">Satu pertanyaan lagi</span>
+      <h2 id="h-ask">Mau sama aku terus?</h2>
+      <div class="ask-area" id="askArea">
+        <button class="btn" id="yes" type="button">Mau</button>
+        <button class="btn ghost" id="no" type="button">Tidak</button>
+      </div>
+      <p class="ask-reply" id="askReply" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <footer>
+    <b id="signoff">Dengan cinta</b>
+    Dibuat khusus untuk <span id="footName">kamu</span>
+  </footer>
+</main>
+
+<script src="presets.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
